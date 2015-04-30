@@ -2,26 +2,17 @@ from numpy import *
 
 class LatticeBoltzmann:
 
-    def __init__(self, nx, ny, tau, PGrad):
+    def __init__(self, nx, ny):
 
         self.q = 9 # number of velocities
         self.d = 2 # dimension
-        self.init_grid()
+        self.init_grid_var()
 
         # Define class constants for use in its functions
         self.nx = nx
         self.ny = ny
-        self.omega = 1.0/tau
-        self.PGrad = PGrad
 
-        # Initialize the densities matrices
-        self.dens_eq = zeros((self.q, nx, ny))
-        self.dens_old = zeros((self.q, nx, ny))
-        self.dens_new = zeros((self.q, nx, ny))
-
-        self.initial_conditions()
-
-    def init_grid(self):
+    def init_grid_var(self):
 
         # Define the d2q9 vectors for each nodal point
         self.ei = array([(0,0),
@@ -35,7 +26,7 @@ class LatticeBoltzmann:
 
         return True
 
-    def equilibrium(self, rho, v):
+    def calc_eq_dens(self, rho, v):
 
         # Density is in format (q, nx, ny) and ei is (q, dimension)
         # v is the velocity vector, with dimension (dimension, nx, ny)
@@ -50,22 +41,19 @@ class LatticeBoltzmann:
 
         # Calculate the equilibrium density
         for i in range(self.q):
-            self.dens_eq[i,:,:] = self.w[i]*rho*(1+edotv[i] + 
+            dens_eq[i,:,:] = self.w[i]*rho*(1+edotv[i] + 
                             0.5*edotv[i]**2.0 - 1.5*vsqr)
 
-        return self.dens_eq
+        return dens_eq
 
-    def initial_conditions(self):
+    def calc_v_rho(self, dens):
 
-        # WORK ON THE BOUNDARY CONDITIONS NOW!!!
+        # Densities are dens(q, nx, ny) and rho(nx, ny)
+        rho = sum(dens, axis = 0)
 
-        v_ini = self.PGrad/self.omega * ones((self.d, self.nx, self.ny))
+        # ei(q, d) and dens(q, nx, ny). We need v(d, nx, ny).
+        v = dot(self.ei.transpose(), dens.transpose(1,0,2))/rho
 
-        self.equilibrium(1.0, v_ini)
-
-        rho = sum(self.dens_eq, axis = 0)
-        self.v = dot(self.ei.transpose(), self.dens_eq.transpose(1,0,2))/rho
-
-        print self.v
+        return v, rho
 
 

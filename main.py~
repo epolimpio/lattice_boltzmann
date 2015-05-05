@@ -61,4 +61,4 @@ for t in np.arange(t_max):
     dens_eq = model.calc_eq_dens(rho, v)
     dens = (1-omega)*dens + omega*dens_eq
 
-    print t, exact[ny/2], v_mean[ny/2]
+    print t, v_mean[ny/2], exact[ny/2]

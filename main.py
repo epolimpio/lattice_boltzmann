@@ -6,12 +6,12 @@ import matplotlib as matl
 import matplotlib.pyplot as plt
 
 # Parameters of the simulation
-nx = 30
-ny = 11
+nx = 101
+ny = 21
 deltav = 1e-5
 tau = 1
 omega = 1.0/tau
-t_max = 10000
+t_max = 5000
 
 #####################################
 model = LatticeBoltzmann(ny, nx)
@@ -28,7 +28,7 @@ fluid = np.logical_not(wall)
 
 # Exact Poiseuille flow
 visc = (tau-0.5)/3
-peak = deltav/tau/(2*visc)
+peak = deltav/tau/visc/2
 L = (ny-2)/2
 dist = np.linspace(-(L-0.5), (L-0.5), num = ny-2)
 exact = -peak*(dist**2-L**2)
@@ -36,7 +36,8 @@ exact = -peak*(dist**2-L**2)
 # Initiate graphics
 plt.ion()
 fig = plt.figure()
-ax1 = fig.add_subplot(1,1,1)
+ax1 = fig.add_subplot(1,2,1)
+ax2 = fig.add_subplot(1,2,2)
 
 # Dynamics
 for t in np.arange(t_max):
@@ -48,9 +49,12 @@ for t in np.arange(t_max):
 
     # Plot the velocity profile
     ax1.clear()
+    ax2.clear()
     v_mean = np.mean(v[0,:,:], axis=1)
     ax1.plot(dist, v_mean[1:ny-1])
     ax1.plot(dist, exact)
+    ax2.plot(dist, v_mean[1:ny-1]/np.max(v_mean))
+    ax2.plot(dist, exact/np.max(exact))
     #ax1.pcolor(v[0,:,:])
     plt.draw()
     
@@ -61,4 +65,4 @@ for t in np.arange(t_max):
     dens_eq = model.calc_eq_dens(rho, v)
     dens = (1-omega)*dens + omega*dens_eq
 
-    print t
+    print t, np.sum(v_mean[1:ny-1]-exact)

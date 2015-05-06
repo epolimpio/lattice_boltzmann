@@ -6,11 +6,11 @@ class LatticeBoltzmann:
 
         self.q = 9 # number of velocities
         self.d = 2 # dimension
-        self.init_grid_var()
-
         # Define class constants for use in its functions
         self.nx = nx
         self.ny = ny
+
+        self.init_grid_var()
 
     def init_grid_var(self):
 

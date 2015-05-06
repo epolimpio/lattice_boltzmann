@@ -9,12 +9,13 @@ import matplotlib.pyplot as plt
 nx = 30
 ny = 17
 deltav = 1e-5
-tau = 1.0
+tau = 5
 omega = 1.0/tau
 t_max = 5000
 
 #####################################
 model = LatticeBoltzmann(ny, nx)
+
 # Initial conditions
 v = np.zeros((model.d, ny, nx))
 rho = np.ones((ny,nx))
@@ -27,14 +28,13 @@ wall[ny-1,:] = np.ones(nx).astype(bool)
 fluid = np.logical_not(wall)
 
 # Exact Poiseuille flow
-visc = (tau-0.5)/3
-peak = deltav/tau/visc/2
-L = (ny-2)/2
-dist = np.linspace(-(L-0.5), (L-0.5), num = ny-2)
-exact = -peak*(dist**2-L**2)
+visc = (tau-0.5)/3.0
+peak = deltav/tau/visc/2.0
+L = ny/2.0 - 1.0
+dist = np.linspace(-(L-0.5), L-0.5, num = ny-2)
+exact = -peak*(dist**2-(L+0.5)**2)
 
 # Initiate graphics
-plt.ion()
 fig = plt.figure()
 ax1 = fig.add_subplot(1,2,1)
 ax2 = fig.add_subplot(1,2,2)
@@ -47,16 +47,8 @@ for t in np.arange(t_max):
 
     v, rho = model.calc_v_rho(dens)
 
-    # Plot the velocity profile
-    ax1.clear()
-    ax2.clear()
+    # Mean velocity
     v_mean = np.mean(v[0,:,:], axis=1)
-    ax1.plot(dist, v_mean[1:ny-1])
-    ax1.plot(dist, exact)
-    ax2.plot(dist, v_mean[1:ny-1]/np.max(v_mean))
-    ax2.plot(dist, exact/np.max(exact))
-    #ax1.pcolor(v[0,:,:])
-    plt.draw()
     
     # Add velocity due to pressure gradient
     v[0,:,:] = v[0,:,:] + deltav
@@ -65,5 +57,15 @@ for t in np.arange(t_max):
     dens_eq = model.calc_eq_dens(rho, v)
     dens = (1-omega)*dens + omega*dens_eq
 
-    print t, exact[ny/2], v_mean[ny/2]
+    print t, exact[ny/2-1], v_mean[ny/2]-v_mean[0]
+
+# Plot the velocity profile
+ax1.plot(dist, v_mean[1:ny-1])
+ax1.plot(dist, exact)
+v_mean = v_mean - np.min(v_mean[1:ny-1])
+exact = exact - np.min(exact)
+ax2.plot(dist, v_mean[1:ny-1])
+ax2.plot(dist, exact)
+
+plt.show()
 

@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 nx = 30
 ny = 17
 deltav = 1e-2
-tau = 1.0
+tau = 0.70
 omega = 1.0/tau
-t_max = 100
+t_max = 10000
 
 #####################################
 model = LatticeBoltzmann(ny, nx)
@@ -39,6 +39,8 @@ fig = plt.figure()
 fig2 = plt.figure()
 ax1 = fig.add_subplot(1,2,1)
 ax2 = fig.add_subplot(1,2,2)
+ax3 = fig2.add_subplot(2,1,1)
+ax4 = fig2.add_subplot(2,1,2)
 
 # Dynamics
 for t in np.arange(t_max):
@@ -61,15 +63,15 @@ for t in np.arange(t_max):
 
     print t, exact[ny/2-1], v_mean[ny/2]-v_mean[0]
 
-# Plot a stream with color 
+# Plot a stream with color and vector field
 x = np.linspace(0,nx,nx)
-y = np.linspace(-L,L,ny)
-o = v[0,:,:]
-p = v[1,:,:]
+o = v[0,1:ny-1,:]
+p = v[1,1:ny-1,:]
 speed = np.sqrt(o*o + p*p)
 
-plt.streamplot(x, y, o, p, density=(1,1), color = speed, linewidth=2)
-plt.colorbar()
+ax3.streamplot(x, dist, o, p, density=(1,1), color = speed, linewidth=2)
+#plt.colorbar()
+ax4.quiver(x,dist,o,p, angles = 'xy')
 plt.draw()
 
 # Plot the velocity profile

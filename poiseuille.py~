@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 nx = 30
 ny = 17
 deltav = 1e-2
-tau = 1.0
+tau = 0.70
 omega = 1.0/tau
-t_max = 100
+t_max = 10000
 
 #####################################
 model = LatticeBoltzmann(ny, nx)
@@ -28,7 +28,6 @@ wall[ny-1,:] = np.ones(nx).astype(bool)
 fluid = np.logical_not(wall)
 
 # Exact Poiseuille flow
-
 visc = (tau-0.5)/3.0
 peak = deltav/tau/visc/2.0
 L = ny/2.0 - 1.0
@@ -40,6 +39,8 @@ fig = plt.figure()
 fig2 = plt.figure()
 ax1 = fig.add_subplot(1,2,1)
 ax2 = fig.add_subplot(1,2,2)
+ax3 = fig2.add_subplot(2,1,1)
+ax4 = fig2.add_subplot(2,1,2)
 
 # Dynamics
 for t in np.arange(t_max):
@@ -64,13 +65,13 @@ for t in np.arange(t_max):
 
 # Plot a stream with color 
 x = np.linspace(0,nx,nx)
-y = np.linspace(-L,L,ny)
-o = v[0,:,:]
-p = v[1,:,:]
+o = v[0,1:ny-1,:]
+p = v[1,1:ny-1,:]
 speed = np.sqrt(o*o + p*p)
 
-plt.streamplot(x, y, o, p, density=(1,1), color = speed, linewidth=2)#5*speed/speed.max())
-plt.colorbar()
+ax3.streamplot(x, dist, o, p, density=(1,1), color = speed, linewidth=2)
+#plt.colorbar()
+ax4.quiver(x,dist,o,p, angles = 'xy')
 plt.draw()
 
 # Plot the velocity profile

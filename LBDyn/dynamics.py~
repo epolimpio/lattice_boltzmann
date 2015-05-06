@@ -65,7 +65,7 @@ class LatticeBoltzmann:
         dens_out = dens.copy()
 
         for i in range(self.q):
-           dens_out[i, wall] = dens[self.opposite[i], wall] ### wong? wall on top is only half of the bouncing no? and wall at the bottom the other half no?
+           dens_out[i, wall] = dens[self.opposite[i], wall] ### wrong? wall on top is only half of the bouncing no? and wall at the bottom the other half no?
 
         return dens_out
 

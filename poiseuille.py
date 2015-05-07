@@ -28,6 +28,8 @@ wall[0,:] = np.ones(nx).astype(bool)
 wall[ny-1,:] = np.ones(nx).astype(bool)
 fluid = np.logical_not(wall)
 
+# Define the triangle region
+
 # Dynamics
 for t in np.arange(t_max):
     

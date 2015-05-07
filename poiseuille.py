@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 # Parameters of the simulation
 nx = 50
-ny = 21
+ny = 23
 deltav = 1e-2
 tau = 1.0
 omega = 1.0/tau

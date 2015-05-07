@@ -28,18 +28,6 @@ wall[0,:] = np.ones(nx).astype(bool)
 wall[ny-1,:] = np.ones(nx).astype(bool)
 fluid = np.logical_not(wall)
 
-# Exact Poiseuille flow
-visc = (tau-0.5)/3.0
-peak = deltav/tau/visc/2.0
-L = ny/2.0 - 1.0
-dist = np.linspace(-(L-0.5), L-0.5, num = ny-2)
-exact = -peak*(dist**2-(L+0.5)**2)
-
-# Initiate graphics
-fig = plt.figure()
-ax1 = fig.add_subplot(1,2,1)
-ax2 = fig.add_subplot(1,2,2)
-
 # Dynamics
 for t in np.arange(t_max):
     
@@ -52,23 +40,16 @@ for t in np.arange(t_max):
     v_mean = np.mean(v[0,:,:], axis=1)
     
     # Add velocity due to pressure gradient
-    v[0,:,:] = v[0,:,:] + deltav
+    v[0,fluid] = v[0,fluid] + deltav
 
     # Calculate equilibrium and collide
     dens_eq = model.calc_eq_dens(rho, v)
     dens = (1-omega)*dens + omega*dens_eq
 
-    print t, exact[ny/2-1], v_mean[ny/2]-v_mean[0]
+    print t, v_mean[ny/2]-v_mean[0]
 
 # Plot a stream with color and a vector field
-LBPlot.streamline_plot_2D(nx = nx, ny = ny, v = v, wall = wall)
-
-# Plot the velocity profile
-ax1.plot(dist, v_mean[1:ny-1])
-ax1.plot(dist, exact)
-v_mean = v_mean - np.min(v_mean[1:ny-1])
-exact = exact - np.min(exact)
-ax2.plot(dist, v_mean[1:ny-1])
-ax2.plot(dist, exact)
+LBPlot.streamline_plot_2D(nx, ny, v, wall)
+LBPlot.poiseuille_profile_with_exact(ny, v_mean, tau, deltav)
 
 plt.show()

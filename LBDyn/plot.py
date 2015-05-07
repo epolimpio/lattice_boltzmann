@@ -15,12 +15,17 @@ def streamline_plot_2D(nx, ny, v, wall):
 	y = np.linspace(-L,L,ny)
 	speed = np.sqrt(np.sum(v**2, axis = 0))
 	lw = 5*speed/speed.max()
+    p = np.ma.array(v[0,:,:], mask=wall)
+	q = np.ma.array(v[1,:,:], mask=wall)
+    lw = np.ma.array(lw, mask=wall)
 
 	# Plot streamline and wall
-	ax1.streamplot(x, y, v[0,:,:], v[1,:,:], density=0.6, color = 'k', linewidth=lw)
-	ax1.imshow(~wall, extent=(0, nx, -L, L), alpha=0.5, interpolation='nearest', cmap=plt.cm.gray)
-	ax2.quiver(x, y, v[0,:,:], v[1,:,:], angles = 'xy')
-	ax2.imshow(~wall, extent=(0, nx, -L, L), alpha=0.5, interpolation='nearest', cmap=plt.cm.gray)
+	ax1.streamplot(x, y, p, q, density=0.6, color = '#004C99', linewidth=lw)
+	ax1.imshow(~wall, extent=(0, nx, -L, L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
+	ax2.quiver(x, y, p, q, angles = 'xy')
+	ax2.imshow(~wall, extent=(0, nx, -L, L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
+    c = ax2.contourf(x,y,lw, cmap = 'summer')
+    b = plt.colorbar(c, orientation='vertical')
 	plt.draw()
 
 def poiseuille_profile_with_exact(ny, v_mean, tau, deltav):

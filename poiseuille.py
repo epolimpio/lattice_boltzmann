@@ -7,10 +7,10 @@ import matplotlib as matl
 import matplotlib.pyplot as plt
 
 # Parameters of the simulation
-nx = 50
+nx = 100
 ny = 23
 deltav = 1e-2
-tau = 1.0
+tau = 20.0
 omega = 1.0/tau
 t_max = 5000
 
@@ -49,6 +49,12 @@ for t in np.arange(t_max):
     dens = (1-omega)*dens + omega*dens_eq
 
     print t, v_mean[ny/2]-v_mean[0]
+
+# Printing in a file
+data_file = open("data_tau_{}.txt".format(tau), "w+")
+for i in range(ny):
+     data_file.write('{!r}\t{!r}\n'.format(i, v_mean[i]))
+data_file.close()
 
 # Plot a stream with color and a vector field
 LBPlot.streamline_plot_2D(nx, ny, v, wall)

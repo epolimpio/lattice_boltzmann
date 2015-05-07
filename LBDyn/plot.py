@@ -13,8 +13,16 @@ def streamline_plot_2D(nx, ny, v, wall):
     x = np.linspace(0,nx,nx)
     L = ny/2.0
     y = np.linspace(-L,L,ny)
+
+    v_min = np.min(np.min(v[:,1:ny-1,:],axis=1), axis=1)
+    #v_outbound = np.min(v[:,0,:],axis=1)
+    for i in range(2):    
+        v[i,:,:] = v[i,:,:] - v_min[i]# + v_outbound[i]
+
     speed = np.sqrt(np.sum(v**2, axis = 0))
     lw = 5*speed/speed.max()
+
+    # Masking the data to plot only the fluid
     p = np.ma.array(v[0,:,:], mask=wall)
     q = np.ma.array(v[1,:,:], mask=wall)
     lw = np.ma.array(lw, mask=wall)

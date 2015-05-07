@@ -29,11 +29,11 @@ def streamline_plot_2D(nx, ny, v, wall):
 
     # Plot streamline and wall
     ax1.streamplot(x, y, p, q, density=0.6, color = '#004C99', linewidth=lw)
-    ax1.imshow(~wall, extent=(0, nx, -L, L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
+    ax1.imshow(~wall, extent=(0, nx, L, -L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
     c = ax2.contourf(x,y,lw, cmap = 'summer')
     b = plt.colorbar(c, orientation='vertical')
     ax2.quiver(x, y, p, q, angles = 'xy')
-    ax2.imshow(~wall, extent=(0, nx, -L, L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
+    ax2.imshow(~wall, extent=(0, nx, L, -L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
 
     plt.draw()
 

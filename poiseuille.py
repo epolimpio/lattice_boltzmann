@@ -7,10 +7,10 @@ import matplotlib as matl
 import matplotlib.pyplot as plt
 
 # Parameters of the simulation
-nx = 100
-ny = 23
+nx = 50
+ny = 27
 deltav = 1e-2
-tau = 20.0
+tau = 7.0
 omega = 1.0/tau
 t_max = 5000
 

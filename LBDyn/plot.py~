@@ -16,19 +16,20 @@ def streamline_plot_2D(nx, ny, v, wall):
 
     v_min = np.min(np.min(v[:,1:ny-1,:],axis=1), axis=1)
     #v_outbound = np.min(v[:,0,:],axis=1)
-    print v_min
     for i in range(2):    
         v[i,:,:] = v[i,:,:] - v_min[i]# + v_outbound[i]
 
     speed = np.sqrt(np.sum(v**2, axis = 0))
     lw = 5*speed/speed.max()
+
+    # Masking the data to plot only the fluid
     p = np.ma.array(v[0,:,:], mask=wall)
     q = np.ma.array(v[1,:,:], mask=wall)
     lw = np.ma.array(lw, mask=wall)
 
     # Plot streamline and wall
     ax1.streamplot(x, y, p, q, density=0.6, color = '#004C99', linewidth=lw)
-    ax1.imshow(~wall, extent=(0, nx, -L, L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
+    ax1.imshow(~wall, extent=(0, nx, L, -L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
     c = ax2.contourf(x,y,lw, cmap = 'summer')
     b = plt.colorbar(c, orientation='vertical')
     ax2.quiver(x, y, p, q, angles = 'xy')

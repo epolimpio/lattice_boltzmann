@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 
 # Parameters of the simulation
 nx = 100
-ny = 10
+ny = 32
 deltav = 1e-2
-tau = 0.70
+tau = 1.0
 omega = 1.0/tau
-t_max = 1000
+t_max = 10000
 
 #####################################
 model = LatticeBoltzmann(ny, nx)
@@ -72,9 +72,9 @@ speed = np.sqrt(o*o + p*p)
 lw = 5*speed/speed.max()
 
 ax3.streamplot(x, y, o, p, density=0.6, color = 'k', linewidth=lw)
-ax3.imshow(~wall, extent=(0, nx, -L, L), alpha=0.5, interpolation='nearest', cmap=plt.cm.gray)
+ax3.imshow(~wall, extent=(0, nx, -(L+1.0), (L+1.0)), alpha=0.5, interpolation='nearest', cmap=plt.cm.gray)
 ax4.quiver(x, y, o, p, angles = 'xy')
-ax4.imshow(~wall, extent=(0, nx, -L, L), alpha=0.5, interpolation='nearest', cmap=plt.cm.gray)
+ax4.imshow(~wall, extent=(0, nx, -(L+1.0), (L+1.0)), alpha=0.5, interpolation='nearest', cmap=plt.cm.gray)
 plt.draw()
 
 # Plot the velocity profile

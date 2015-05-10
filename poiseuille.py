@@ -7,12 +7,12 @@ import matplotlib as matl
 import matplotlib.pyplot as plt
 
 # Parameters of the simulation
-nx = 50
+nx = 51
 ny = 27
 deltav = 1e-2
-tau = 7.0
+tau = 1.5
 omega = 1.0/tau
-t_max = 5000
+t_max = 10000
 
 #####################################
 model = LatticeBoltzmann(ny, nx)
@@ -49,13 +49,13 @@ for t in np.arange(t_max):
     print t, v_mean[ny/2]-v_mean[0]
 
 # Printing in a file
-data_file = open("data_tau_{}.txt".format(tau), "w+")
+data_file = open("data/data_tau_{}.txt".format(tau), "w+")
 for i in range(ny):
      data_file.write('{!r}\t{!r}\n'.format(i, v_mean[i]))
 data_file.close()
 
 # Plot a stream with color and a vector field
 LBPlot.streamline_plot_2D(nx, ny, v, wall)
-LBPlot.poiseuille_profile_with_exact(ny, v_mean, tau, deltav)
+LBPlot.poiseuille_profile_with_exact_unbias(ny, v_mean, tau, deltav)
 
 plt.show()

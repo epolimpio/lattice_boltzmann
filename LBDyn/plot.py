@@ -6,34 +6,32 @@ def streamline_plot_2D(nx, ny, v, wall):
     
     # Initialize figure
     fig = plt.figure()
-    ax1 = fig.add_subplot(2,1,1)
-    ax2 = fig.add_subplot(2,1,2)
+    ax1 = fig.add_subplot(1,1,1)
+    ax1.tick_params(axis='both', which='major', labelsize=16)
 
     # Calculate protting parameters
-    x = np.linspace(0,nx,nx)
+    x = np.linspace(0,nx-1,nx)
     L = ny/2.0
-    y = np.linspace(-L,L,ny)
+    y = np.linspace(0,ny-1,ny)
 
-    v_min = np.min(np.min(v[:,1:ny-1,:],axis=1), axis=1)
-    #v_outbound = np.min(v[:,0,:],axis=1)
-    for i in range(2):    
-        v[i,:,:] = v[i,:,:] - v_min[i]# + v_outbound[i]
-
+    # Calculate norm
     speed = np.sqrt(np.sum(v**2, axis = 0))
-    lw = 5*speed/speed.max()
 
     # Masking the data to plot only the fluid
     p = np.ma.array(v[0,:,:], mask=wall)
     q = np.ma.array(v[1,:,:], mask=wall)
-    lw = np.ma.array(lw, mask=wall)
-
-    # Plot streamline and wall
-    ax1.streamplot(x, y, p, q, density=0.6, color = '#004C99', linewidth=lw)
-    ax1.imshow(~wall, extent=(0, nx, L, -L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
-    c = ax2.contourf(x,y,lw, cmap = 'summer')
+    lw = np.ma.array(speed, mask=wall)
+    
+    # Plot colourmap
+    c = ax1.contourf(x,y, lw, cmap = 'summer')
     b = plt.colorbar(c, orientation='vertical')
-    ax2.quiver(x, y, p, q, angles = 'xy')
-    ax2.imshow(~wall, extent=(0, nx, L, -L), alpha=1, interpolation='nearest', cmap=plt.cm.gray)
+    b.set_label('Speed', size = 18, rotation = 270, labelpad = 20)
+    b.ax.tick_params(axis='y', which='major', labelsize=16)
+    ax1.set_xlabel('X', size = 18)
+    ax1.set_ylabel('Y', size = 18)
+
+    ax1.quiver(x, y, p, q, angles = 'xy')
+    ax1.patch.set_facecolor('black')
 
     plt.draw()
 
@@ -41,8 +39,28 @@ def poiseuille_profile_with_exact(ny, v_mean, tau, deltav):
 
     # Initiate graphics
     fig = plt.figure()
-    ax1 = fig.add_subplot(1,2,1)
-    ax2 = fig.add_subplot(1,2,2)
+    ax1 = fig.add_subplot(1,1,1)
+    ax1.tick_params(axis='both', which='major', labelsize=16)
+
+    # Exact Poiseuille flow
+    visc = (tau-0.5)/3.0
+    peak = deltav/tau/visc/2.0
+    L = ny/2.0 - 1.0
+    dist = np.linspace(-(L+0.5), L+0.5, num = ny)
+    exact = -peak*(dist**2-(L+0.5)**2)
+
+    ax1.scatter(v_mean, dist, color = 'k', marker = 'x', label = "Calculated")
+    ax1.plot(exact, dist, color = 'r', linewidth = 2.0, label = "Exact")
+    ax1.set_xlabel('Velocity', size = 16)
+    ax1.set_ylabel('Dist. from the center of the pipe', size = 16)
+    ax1.legend()
+
+def poiseuille_profile_with_exact_unbias(ny, v_mean, tau, deltav):
+
+    # Initiate graphics
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1,1,1)
+    ax1.tick_params(axis='both', which='major', labelsize=16)
 
     # Exact Poiseuille flow
     visc = (tau-0.5)/3.0
@@ -51,16 +69,11 @@ def poiseuille_profile_with_exact(ny, v_mean, tau, deltav):
     dist = np.linspace(-(L-0.5), L-0.5, num = ny-2)
     exact = -peak*(dist**2-(L+0.5)**2)
 
-    # Plot the velocity profile
-    ax1.plot(v_mean[1:ny-1], dist, 'k', linewidth = 2.0, label = "Calculated")
-    ax1.plot(exact, dist, 'r', linewidth = 2.0, label = "Exact")
-    ax1.set_title("Abs values")
-    ax1.legend()
-
-    # Plot the unbiased variables
-    v_mean = v_mean - np.min(v_mean[1:ny-1])
     exact = exact - np.min(exact)
-    ax2.set_title("Unbiased")
-    ax2.scatter(v_mean[1:ny-1], dist, color = 'k', marker = 'x', label = "Calculated")
-    ax2.plot(exact, dist, color = 'r', linewidth = 2.0, label = "Exact")
-    ax2.legend()
+    v_mean = v_mean - np.min(v_mean[1:ny-1])
+
+    ax1.scatter(v_mean[1:ny-1], dist, color = 'k', marker = 'x', label = "Calculated")
+    ax1.plot(exact, dist, color = 'r', linewidth = 2.0, label = "Exact")
+    ax1.set_xlabel('Velocity - Bias', size = 16)
+    ax1.set_ylabel('Dist. from the center of the pipe', size = 16)
+    ax1.legend()

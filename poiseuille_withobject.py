@@ -7,10 +7,10 @@ import matplotlib as matl
 import matplotlib.pyplot as plt
 
 # Parameters of the simulation
-nx = 51
-ny = 27
-deltav = 1e-2
-tau = 1.5
+nx = 101
+ny = 21
+deltav = 1e-5
+tau = 1.0
 omega = 1.0/tau
 t_max = 10000
 
@@ -22,19 +22,27 @@ v = np.zeros((model.d, ny, nx))
 rho = np.ones((ny,nx))
 dens = model.calc_eq_dens(rho, v)
 
+# Define tringular obstacle
+h = ny/2.0
+l = nx/8.0
+c = nx/2.0
+triangle_func = np.fromfunction(lambda y, x: y - (h - abs(h/l*(x-c))), (ny, nx))
+obstacle = (triangle_func < 0)
+
 # Define boundaries (boolean array)
 wall = np.zeros((ny, nx)).astype(bool)
 wall[0,:] = np.ones(nx).astype(bool)
 wall[ny-1,:] = np.ones(nx).astype(bool)
+wall = np.logical_or(wall, obstacle) 
 fluid = np.logical_not(wall)
 
 # Dynamics
 for t in np.arange(t_max):
     
     dens = model.stream(dens)
-    dens = model.bounce_back(dens, wall)
-
     v, rho = model.calc_v_rho(dens)
+    
+    dens = model.bounce_back(dens, wall)
 
     # Mean velocity
     v_mean = np.mean(v[0,:,:], axis=1)
@@ -44,18 +52,11 @@ for t in np.arange(t_max):
 
     # Calculate equilibrium and collide
     dens_eq = model.calc_eq_dens(rho, v)
-    dens = (1-omega)*dens + omega*dens_eq
+    dens[:,fluid] = (1-omega)*dens[:,fluid] + omega*dens_eq[:,fluid]
 
-    print t, v_mean[ny/2]-v_mean[0]
-
-# Printing in a file
-data_file = open("data/data_tau_{}.txt".format(tau), "w+")
-for i in range(ny):
-     data_file.write('{!r}\t{!r}\n'.format(i, v_mean[i]))
-data_file.close()
+    print t, v_mean[ny/2]
 
 # Plot a stream with color and a vector field
 LBPlot.streamline_plot_2D(nx, ny, v, wall)
-LBPlot.poiseuille_profile_with_exact_unbias(ny, v_mean, tau, deltav)
 
 plt.show()

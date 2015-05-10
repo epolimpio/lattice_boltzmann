@@ -48,7 +48,7 @@ It can be shown \cite{ICCPBook} that under appropriate approximations (incompres
 
 \section{Implementation}
 
-To implement the Lattice Boltzmann model we first initialized the system with an average veolcity equal to zero and a density of one in each node of the lattice. Then we calculated the equilibrium density taking these parameters and took it as initial density in the d2q9 lattice. After, we evolved the system with the following algorithm:
+The implementation of the Lattice Boltzmann model is done through the following algorithm:
 
 \begin{enumerate}
 \item Move the densities to the appropriate neighbor

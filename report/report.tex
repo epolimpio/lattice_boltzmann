@@ -48,7 +48,7 @@ It can be shown \cite{ICCPBook} that under appropriate approximations (incompres
 
 \section{Implementation}
 
-To implement the Lattice Boltzmann model we first initialized the system with an average veolcity equal to zero and a density of one in each node of the lattice. Then we calculated the equilibrium density taking these parameters and took it as initial density in the d2q9 lattice. After, we evolved the system with the following algorithm:
+To implement the Lattice Boltzmann model we first initialized the system with $u_{\alpha} = 0$ and $\rho = 1$ in each node of the lattice. Then we calculated the equilibrium densities taking these parameters using equation (\ref{equil}) and took it as initial densities in the d2q9 lattice. After, we evolved the system with the following algorithm:
 
 \begin{enumerate}
 \item Move the densities to the appropriate neighbor
@@ -61,7 +61,7 @@ To implement the Lattice Boltzmann model we first initialized the system with an
 
 In the walls, we used the ``modified bounce back'' condition, where the zero slip boundary is between two node points. Although there is a small residual slip in the wall due to this implementation and better implementations could be performed \cite{He1997a}, we use this conditions by its simplicity and efficiency. This condition is implemented by inverting the velocity ($\vec{v} \to -\vec{v}$) of the densities that move into the wall nodes. In the inlet/outlet of the pipe we use periodic coundary conditions.
 
-After calculating the average velocities on each site we add a small amount in the flowing direction. This is to impose a flow due to a constant pressure gradient. With this we calculate the equilibrium densities following the equation \ref{equil} to later relax the system according to equation \ref{relax}.
+After calculating the average velocities on each site we add a small amount in the flowing direction. This is to impose a flow due to a constant pressure gradient. With this we calculate the equilibrium densities following the equation (\ref{equil}) to later relax the system according to equation (\ref{relax}).
 
 We run the algorithm until the system reaches equilibrium, what was checked by monitoring the average velocity in the center of the tube. We successfully used a grid of size $N_x$ between 50 and 500 and $N_y$ between 20 and 200, $\tau$ between $0.75$ and $20$ and the velocity added at each step between $10^{-2}$ and $10^{-7}$. The number of steps to reach equilibrium changes depending on the parameters and it tipically ranges between 1000 and 10000. Therefore we used 10000 timesteps for the simulations discussed in the next section. 
 

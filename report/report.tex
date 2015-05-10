@@ -37,7 +37,7 @@ The evolution is given by the Boltzmann equation, using Bhatnagar-Gross-Krook (B
 \begin{equation} \label{relax}
 n_{i}(\mathbf{r}+c\Delta t\mathbf{e}_{i},t+\Delta t) = n_{i}(\mathbf{r},t)-\frac{1}{\tau}\left [n_{i}(\mathbf{r},t)-n_{i}^{eq}(\mathbf{r},t)  \right ]
 \end{equation}
-where we take $c$ and $\Delta t$, velocity and time step, respectively, are taken as 1 for simplicity. The label $i$ denotes the 9 possible directions $\mathbf{e}_{i}$ on each site.  The equilibrium density is given by:
+where we take $c$ and $\Delta t$, velocity and time step, respectively, as 1 for simplicity. The label $i$ denotes the 9 possible directions $\mathbf{e}_{i}$ on each site.  The equilibrium density is given by:
 
 \begin{equation} \label{equil}
 n_i^{eq} = w_i\frac{\rho}{m}\left(1+\frac{3}{c^2}e_{i\alpha}u_\alpha + \frac{9}{2c^4}e_{i\alpha}e_{i\beta}u_\alpha u_\beta - \frac{3}{2}\frac{u_\alpha u_\beta}{c^2}\right)
@@ -81,7 +81,7 @@ Further, we added a triangular ladder obstruction in the pipe and let the system
 	\caption{Velocity map of a fluid through a pipe with a triangular ladder obstacle. The arrows indicate the velocity vectors. The grid size for the simulation is $N_x \times N_y = 101 \times 21$, the relaxation time is $\tau=1.0$ and the added velocity is $10^{-5}$. \label{arrows}}
 \end{figure}
 
-We also tested other obstacles, including blocks ans circular objects. It is important to notice that the introduction of the obstacle increase the velocity in some regions and, therefore, the range of combinations of $\tau$ and pressure gradients for which the approximations are valid change. Because of that, we used a lower added velocity or higher viscosities ($\tau$) in this case.
+We also tested other obstacles, including blocks and circular objects. It is important to notice that the introduction of the obstacle increase the velocity in some regions and, therefore, the range of combinations of $\tau$ and pressure gradients for which the approximations are valid change. Because of that, we used a lower added velocity or higher viscosities ($\tau$) in this case.
 
 \section{Conclusion \label{conclusion}}
 
